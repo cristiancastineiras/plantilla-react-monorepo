@@ -1,15 +1,20 @@
-# plantilla-react-monorepo
 
-Este proyecto es una plantilla de monorepo para aplicaciones web utilizando React, Vite y TypeScript, organizada para facilitar el desarrollo escalable y modular.
+# Plantilla React Monorepo
 
-Importante: Esta plantilla está diseñada para ser un punto de partida. Asegúrate de personalizarla según las necesidades específicas de tu proyecto.
-Cosas buenas de mi version de webapp (React + Vite + TS + Tailwind + Turborepo + Biome):
-Autogenera los aliases de los paquetes en el tsconfig y vite.config
-Autogenera el tipado de entorno para tenerlo linteado y con autocompletado en la app al desarrollar
-Tailwind CSS ya configurado y listo para usar con autocompletado y aplicado a los componentes de paquetes monorepo
-Usamos PNPM, que es más rápido y eficiente que npm o yarn en monorepos
-Biome como linter y formateador, que es más rápido que ESLint y Prettier
-Turborepo para orquestar tareas y optimizar el desarrollo en monorepos
+> Monorepo moderno para proyectos React, optimizado con Vite, TurboRepo y pnpm workspaces. Incluye generación automática de alias, tipado de entorno, configuración centralizada y paquetes reutilizables para desarrollo ágil y escalable.
+
+---
+
+## Características principales de la plantilla
+
+- **Alias automáticos**: Los imports de paquetes internos se generan solos en tsconfig y vite.config.
+- **Tipado de entorno**: Variables de entorno autogeneradas y tipadas para autocompletado y linting.
+- **Tailwind CSS listo**: Configurado y aplicado a todos los componentes del monorepo.
+- **PNPM**: Gestor de paquetes rápido y eficiente para monorepos.
+- **Biome**: Linter y formateador ultrarrápido.
+- **Turborepo**: Orquestación de tareas y optimización de builds.
+
+---
 
 
 ## Estructura del Proyecto
@@ -35,53 +40,68 @@ Turborepo para orquestar tareas y optimizar el desarrollo en monorepos
 - **turbo.json**: Configuración de Turborepo para orquestar tareas en el monorepo.
 - **package.json**: Dependencias y scripts raíz del monorepo.
 
-## Instalación
 
-Deberias tener instalado [PNPM](https://pnpm.io/) para manejar las dependencias del monorepo.
-con el comando:
-```bash
-npm install -g pnpm
-```
-Ya lo tendrias, eres libre de usar el gestor que prefieras, pero esta plantilla esta optimizada para PNPM.
+## Instalación rápida
 
-1. Clona el repositorio:
-	 ```bash
-	 git clone https://github.com/Cristiancastt/plantilla-react-monorepo.git
-	 cd plantilla-react-monorepo
-	 ```
-2. Instala las dependencias:
-	 ```bash
-	 npx npm-check-updates -u
-	 pnpm install
-	 ```
+1. Instala [PNPM](https://pnpm.io/):
+	```bash
+	npm install -g pnpm
+	```
+2. Clona el repo y entra en la carpeta:
+	```bash
+	git clone https://github.com/Cristiancastt/plantilla-react-monorepo.git
+	cd plantilla-react-monorepo
+	```
+3. Instala dependencias:
+	```bash
+	npx npm-check-updates -u
+	pnpm install
+	```
+4. Inicia la app:
+	```bash
+	pnpm dev
+	```
 
-## Script Principal
+---
 
-- `npm run dev` — Inicia la aplicación web en modo desarrollo.
+## Scripts útiles
 
-Puedes generarte tus propios scripts en el `package.json` raíz (monorepo) o en los `package.json` de cada paquete o aplicación según tus necesidades.
+| Comando         | Descripción                                 |
+|-----------------|---------------------------------------------|
+| pnpm dev        | Inicia la app web en modo desarrollo        |
 
-## Tecnologías Utilizadas
+---
 
-- **React** — Librería para construir interfaces de usuario.
-- **Vite** — Bundler rápido para desarrollo moderno.
-- **SWC** — Compilador para optimizar el código JavaScript y TypeScript.
-- **TypeScript** — Tipado estático para JavaScript.
-- **Tailwind CSS** — Framework de utilidades para estilos.
-- **Turborepo** — Herramienta para monorepositorios.
-- **Biome** — Linter y formateador de código.
-- **PNPM** — Gestor de paquetes eficiente para monorepos.
-- **ky** — Cliente HTTP basado en Fetch.
+
+## Tecnologías principales
+
+| Tecnología    | Uso principal                                 |
+|---------------|-----------------------------------------------|
+| React         | UI y componentes                              |
+| Vite          | Bundler y servidor de desarrollo              |
+| SWC           | Compilador rápido para JS/TS                  |
+| TypeScript    | Tipado estático                               |
+| Tailwind CSS  | Utilidades de estilos                         |
+| Turborepo     | Orquestación de monorepo                      |
+| Biome         | Linter y formateador                          |
+| PNPM          | Gestor de paquetes                            |
+| ky            | Cliente HTTP                                  |
+
+---
+
 
 ## ¿Cómo agregar nuevos paquetes?
 
-1. Crea una nueva carpeta dentro de `paquetes/`.
-2. Añade un `package.json` y el código necesario.
+1. Crea una carpeta dentro de `paquetes/`.
+2. Añade un `package.json` y tu código.
+
+---
+
 
 ## Contribución
 
-¡Las contribuciones son bienvenidas! Por favor, abre un issue o pull request para sugerencias o mejoras.
+¡Las contribuciones son bienvenidas! Abre un issue o pull request para sugerencias o mejoras.
 
 ## Licencia
 
-Este proyecto está bajo la licencia MIT.
+MIT
