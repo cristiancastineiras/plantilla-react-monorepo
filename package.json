@@ -1,0 +1,48 @@
+{
+  "private": true,
+  "name": "plantilla.monorepo",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.28.2",
+  "workspaces": [
+    "apps/*",
+    "paquetes/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@tanstack/react-query": "^5.90.20",
+    "@tanstack/react-table": "^8.21.3",
+    "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
+    "ky": "^1.14.3",
+    "lucide-react": "^0.563.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-error-boundary": "^6.1.0",
+    "react-router-dom": "^7.13.0",
+    "sonner": "^2.0.7",
+    "zustand": "^5.0.11"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.13",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/dotenv": "^8.2.3",
+    "@types/node": "^25.2.0",
+    "@types/react": "^19.2.10",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react-swc": "^4.2.3",
+    "autoprefixer": "^10.4.24",
+    "dotenv-cli": "^11.0.0",
+    "globals": "^17.3.0",
+    "postcss": "^8.5.6",
+    "prettier": "^3.8.1",
+    "rimraf": "^6.1.2",
+    "tailwindcss": "^4.1.18",
+    "turbo": "^2.8.1",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.1",
+    "vite-plugin-static-copy": "^3.2.0"
+  }
+}

@@ -1,0 +1,4 @@
+@import "tailwindcss";
+
+/* Incluir las clases de Tailwind usadas en los paquetes compartidos */
+@source "../../../paquetes";

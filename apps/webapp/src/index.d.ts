@@ -1,0 +1,1 @@
+declare module '*.css'; // Soporte para importar archivos CSS

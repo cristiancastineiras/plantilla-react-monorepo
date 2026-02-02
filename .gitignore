@@ -1,0 +1,47 @@
+# Sistema y metadatos
+.DS_Store
+*.local
+*.log
+
+# Node / PNPM
+node_modules/
+.pnpm-store/
+pnpm-lock.yaml
+
+# TurboRepo
+.turbo/
+
+# Vite
+**/.vite/
+**/.vite-temp/
+
+# Builds
+dist/
+dist-ssr/
+builds/
+builds/*
+
+# Server / producción
+server/dist/
+
+# Public assets generados
+public/dist/
+
+# Cache de herramientas
+.cache/
+.vscode/
+.idea/
+*.swp
+
+# TypeScript / JavaScript
+*.tsbuildinfo
+
+# Entornos / dotenv
+.env
+.env.*.local
+
+# Logs de prueba o depuración
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

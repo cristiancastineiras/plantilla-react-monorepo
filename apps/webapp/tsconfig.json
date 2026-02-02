@@ -1,0 +1,10 @@
+{
+  "extends": "../../paquetes/configuracion-ts/vite.json",
+  "include": ["src","env.d.ts"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "paths": {
+      "@paquetes/*": ["../../paquetes/*"]
+    }
+  }
+}
