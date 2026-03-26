@@ -1,1 +1,1 @@
-declare module '*.css'; // Soporte para importar archivos CSS
+declare module "*.css" // Soporte para importar archivos CSS

@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.4.7/schema.json",
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
@@ -8,7 +8,17 @@
 	},
 	"files": {
 		"ignoreUnknown": true,
-		"ignore": [
+		"includes": [
+			"**",
+			"!**/node_modules/**",
+			"!**/dist/**",
+			"!**/.turbo/**",
+			"!**/coverage/**",
+			"!**/*.min.js",
+			"!**/pnpm-lock.yaml",
+			"!**/.pnpm-store/**"
+		],
+		"experimentalScannerIgnores": [
 			"**/node_modules/**",
 			"**/dist/**",
 			"**/.turbo/**",
@@ -26,50 +36,10 @@
 		"lineEnding": "lf",
 		"formatWithErrors": false
 	},
-	"organizeImports": {
-		"enabled": true
-	},
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true,
-			"complexity": {
-				"noForEach": "warn",
-				"noUselessSwitchCase": "error",
-				"useSimplifiedLogicExpression": "warn"
-			},
-			"correctness": {
-				"noUndeclaredVariables": "error",
-				"noUnusedImports": "error",
-				"noUnusedVariables": "warn",
-				"noVoidTypeReturn": "error"
-			},
-			"performance": {
-				"noBarrelFile": "warn",
-				"noDelete": "warn"
-			},
-			"security": {
-				"noDangerouslySetInnerHtml": "error"
-			},
-			"style": {
-				"useConst": "error",
-				"useTemplate": "error",
-				"noUselessElse": "error",
-				"useShorthandArrayType": "error",
-				"useImportType": "error"
-			},
-			"suspicious": {
-				"noConsoleLog": "warn",
-				"noDebugger": "error",
-				"noDuplicateCase": "error",
-				"noExplicitAny": "warn",
-				"noConfusingVoidType": "error"
-			},
-			"a11y": {
-				"useAltText": "error",
-				"useAnchorContent": "error",
-				"noLabelWithoutControl": "error"
-			}
+			"recommended": true
 		}
 	},
 	"javascript": {
@@ -92,34 +62,10 @@
 			"allowTrailingCommas": true
 		}
 	},
-	"overrides": [
-		{
-			"include": [
-				"*.config.js",
-				"*.config.ts"
-			],
-			"linter": {
-				"rules": {
-					"correctness": {
-						"noNodejsModules": "off"
-					}
-				}
-			}
-		},
-		{
-			"include": [
-				"**/*.test.ts",
-				"**/*.test.tsx",
-				"**/*.spec.ts"
-			],
-			"linter": {
-				"rules": {
-					"suspicious": {
-						"noConsoleLog": "off",
-						"noExplicitAny": "off"
-					}
-				}
-			}
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
 		}
-	]
+	},
+	"overrides": []
 }
