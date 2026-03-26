@@ -169,6 +169,51 @@ El alias se genera automáticamente, no necesitas configurar nada más.
 
 ---
 
+## CI/CD y Dependabot
+
+### Actualización automática de dependencias
+
+Este proyecto incluye **Dependabot** configurado para:
+
+- ✅ Revisar dependencias cada lunes a las 9:00 AM
+- ✅ Agrupar actualizaciones relacionadas (React, Vite, TanStack, etc.)
+- ✅ **Automerge** de actualizaciones patch y minor (si pasan los tests)
+- ⚠️ Actualizaciones **major** requieren revisión manual
+
+### Seguridad del automerge
+
+El automerge está diseñado para ser seguro:
+
+1. **Solo Dependabot**: Verifica que el PR sea realmente de `dependabot[bot]`
+2. **Tests obligatorios**: Solo mergea si pasan typecheck, lint y build
+3. **Sin majors**: Las actualizaciones major nunca se auto-mergean
+4. **Auditoría**: Cada PR ejecuta `pnpm audit` para detectar vulnerabilidades
+
+### Configurar Branch Protection (recomendado)
+
+Para máxima seguridad, configura estas reglas en GitHub:
+
+```
+Settings → Branches → Add rule → main
+
+☑️ Require a pull request before merging
+☑️ Require status checks to pass before merging
+   - validate
+   - build
+☑️ Require branches to be up to date before merging
+☑️ Do not allow bypassing the above settings
+```
+
+### Archivos de CI/CD
+
+| Archivo | Propósito |
+|---------|-----------|
+| `.github/dependabot.yml` | Configuración de Dependabot |
+| `.github/workflows/ci.yml` | Validación, build y auditoría |
+| `.github/workflows/dependabot-automerge.yml` | Automerge seguro |
+
+---
+
 ## Tecnologías
 
 | Tecnología | Versión | Uso |

@@ -1,0 +1,190 @@
+# ==============================================================================
+# DEPENDABOT - ACTUALIZACIÓN AUTOMÁTICA DE DEPENDENCIAS
+# ==============================================================================
+# Dependabot revisa las dependencias del proyecto y crea PRs automáticamente
+# cuando hay actualizaciones disponibles. Configurado para ser seguro:
+# - Agrupa actualizaciones relacionadas para menos ruido
+# - Solo automerge en patch/minor (las major requieren revisión)
+# - Limita PRs abiertas para no saturar
+# ==============================================================================
+
+version: 2
+
+registries:
+  # Si usas un registry privado de npm, configúralo aquí
+  # npm-registry:
+  #   type: npm-registry
+  #   url: https://npm.pkg.github.com
+  #   token: ${{ secrets.NPM_TOKEN }}
+
+updates:
+  # ============================================================================
+  # DEPENDENCIAS NPM (pnpm)
+  # ============================================================================
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      # Revisa los lunes a las 9:00 AM (hora de Madrid)
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Madrid"
+    
+    # Máximo de PRs abiertas a la vez (evita saturación)
+    open-pull-requests-limit: 10
+    
+    # Prefijo para los commits (conventional commits)
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps(dev)"
+      include: "scope"
+    
+    # Labels para organizar PRs en GitHub
+    labels:
+      - "dependencies"
+      - "automated"
+    
+    # Asignar reviewers automáticamente (descomenta y ajusta)
+    # reviewers:
+    #   - "tu-usuario"
+    # assignees:
+    #   - "tu-usuario"
+    
+    # ========================================================================
+    # AGRUPACIÓN DE DEPENDENCIAS
+    # ========================================================================
+    # Agrupa actualizaciones relacionadas en un solo PR para menos ruido.
+    # Esto es clave para no tener 50 PRs de updates menores.
+    # ========================================================================
+    groups:
+      # --- React y ecosistema ---
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # --- React Router ---
+      react-router:
+        patterns:
+          - "react-router*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # --- TanStack (React Query, Table, etc.) ---
+      tanstack:
+        patterns:
+          - "@tanstack/*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # --- Vite y plugins ---
+      vite:
+        patterns:
+          - "vite"
+          - "@vitejs/*"
+          - "vite-*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # --- Tailwind CSS ---
+      tailwind:
+        patterns:
+          - "tailwindcss"
+          - "@tailwindcss/*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # --- TypeScript y tipos ---
+      typescript:
+        patterns:
+          - "typescript"
+          - "@types/*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # --- Linting y formateo ---
+      linting:
+        patterns:
+          - "@biomejs/*"
+          - "biome"
+          - "prettier"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # --- Build tools ---
+      build-tools:
+        patterns:
+          - "turbo"
+          - "rimraf"
+          - "dotenv*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      # --- Resto de dependencias de desarrollo ---
+      dev-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "patch"
+      
+      # --- Resto de dependencias de producción (patches solo) ---
+      production-patches:
+        dependency-type: "production"
+        update-types:
+          - "patch"
+    
+    # ========================================================================
+    # IGNORAR CIERTAS ACTUALIZACIONES
+    # ========================================================================
+    # Ignora versiones específicas que sabes que causan problemas
+    # ========================================================================
+    ignore:
+      # Ejemplo: ignorar todas las versiones 4.x de una librería problemática
+      # - dependency-name: "problematic-lib"
+      #   versions: ["4.x"]
+      
+      # Ignorar majors de React hasta que tengamos tiempo de migrar
+      # - dependency-name: "react"
+      #   update-types: ["version-update:semver-major"]
+
+  # ============================================================================
+  # GITHUB ACTIONS
+  # ============================================================================
+  # También actualiza las versiones de las GitHub Actions que uses
+  # ============================================================================
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Madrid"
+    
+    open-pull-requests-limit: 5
+    
+    commit-message:
+      prefix: "ci"
+    
+    labels:
+      - "github-actions"
+      - "automated"
+    
+    groups:
+      # Agrupa todas las actualizaciones de actions
+      actions:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
