@@ -111,7 +111,7 @@ function generarTiposEnv(
 ): void {
   const lineas = Object.keys(variables)
     .sort()
-    .map((clave) => `    readonly ${clave}: string;`)
+    .map((clave) => `\treadonly ${clave}: string`)
     .join('\n')
 
   // Incluimos el modo de Vite por defecto para type-safety completo
@@ -125,15 +125,15 @@ function generarTiposEnv(
 // ============================================================================
 
 interface ImportMetaEnv {
-    readonly MODE: string;
-    readonly DEV: boolean;
-    readonly PROD: boolean;
-    readonly SSR: boolean;
+	readonly MODE: string
+	readonly DEV: boolean
+	readonly PROD: boolean
+	readonly SSR: boolean
 ${lineas}
 }
 
 interface ImportMeta {
-    readonly env: ImportMetaEnv
+	readonly env: ImportMetaEnv
 }
 `
 
