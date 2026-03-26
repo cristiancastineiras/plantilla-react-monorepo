@@ -1,13 +1,78 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
   <head>
+    <!-- ====================================================================
+    CONFIGURACIÓN DE HEAD - OPTIMIZADO PARA PRODUCCIÓN
+    =====================================================================
+    Meta tags ordenados por importancia para el navegador.
+    Los más críticos van primero para acelerar el renderizado.
+    ==================================================================== -->
+    
+    <!-- Encoding debe ir primero, antes de cualquier texto -->
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    
+    <!-- Viewport para responsive design -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>webapp</title>
+    
+    <!-- === SEGURIDAD === -->
+    <!-- Previene que el navegador detecte tipos MIME incorrectamente -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    
+    <!-- Fuerza HTTPS durante 1 año (incluir en headers de servidor también) -->
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
+    
+    <!-- Controla qué información se envía en el header Referer -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    
+    <!-- === SEO BÁSICO === -->
+    <title>WebApp</title>
+    <meta name="description" content="Aplicación web moderna construida con React 19, Vite y TypeScript" />
+
+    
+    <!-- === PERFORMANCE === -->
+    <!-- Preconnect a CDNs que uses frecuentemente (descomentar si aplica) -->
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin /> -->
+    <!-- <link rel="preconnect" href="https://api.tudominio.com" crossorigin /> -->
+    
+    <!-- DNS prefetch para recursos externos -->
+    <!-- <link rel="dns-prefetch" href="//analytics.google.com" /> -->
+    
+    <!-- === FAVICON === -->
+    <!-- Favicon SVG moderno (soporta dark mode y es escalable) -->
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <!-- Fallback PNG para navegadores antiguos -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    
+    <!-- Apple touch icon para iOS -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    
+    <!-- === PWA (descomentar si es PWA) === -->
+    <!-- <link rel="manifest" href="/manifest.json" /> -->
   </head>
+  
   <body>
-    <div id="root"></div>
+    <!-- 
+    Contenedor raíz de React.
+    El atributo data-theme permite cambiar temas con CSS.
+    -->
+    <div id="root" data-theme="light"></div>
+    
+    <!-- 
+    Mensaje para usuarios sin JavaScript habilitado.
+    Mejora la accesibilidad y UX.
+    -->
+    <noscript>
+      <div style="padding: 2rem; text-align: center; font-family: system-ui;">
+        <h1>JavaScript requerido</h1>
+        <p>Esta aplicación requiere JavaScript para funcionar. 
+           Por favor, habilítalo en tu navegador.</p>
+      </div>
+    </noscript>
+    
+    <!-- 
+    Script principal de la aplicación.
+    type="module" habilita ES modules nativos.
+    -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

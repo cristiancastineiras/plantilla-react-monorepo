@@ -1,3 +1,18 @@
+# ==============================================================================
+# CONFIGURACIÓN DEL WORKSPACE PNPM
+# ==============================================================================
+# Definimos qué carpetas contienen paquetes del monorepo.
+# pnpm usa esta info para crear los enlaces simbólicos entre paquetes.
+# ==============================================================================
+
 packages:
+  # Aplicaciones desplegables (web, móvil, electron, etc.)
   - "apps/*"
+  
+  # Paquetes compartidos internos (componentes, hooks, utilidades, etc.)
   - "paquetes/*"
+  
+  # Excluimos las carpetas de build y cache para que no se confundan con paquetes
+  - "!**/dist"
+  - "!**/node_modules"
+  - "!**/.turbo"

@@ -1,101 +1,194 @@
 
 # Plantilla React Monorepo
 
-> Monorepo moderno para proyectos React, optimizado con Vite, TurboRepo y pnpm workspaces. Incluye generación automática de alias, tipado de entorno, configuración centralizada y paquetes reutilizables para desarrollo ágil y escalable.
+> Monorepo moderno para proyectos React, optimizado para producción con Vite 7, TurboRepo y pnpm workspaces. Incluye configuraciones de seguridad, rendimiento optimizado y mejores prácticas a marzo de 2026.
 
 ---
 
-## Características principales de la plantilla
+## Características principales
 
-- **Alias automáticos**: Los imports de paquetes internos se generan solos en tsconfig y vite.config.
-- **Tipado de entorno**: Variables de entorno autogeneradas y tipadas para autocompletado y linting.
-- **Tailwind CSS listo**: Configurado y aplicado a todos los componentes del monorepo.
-- **PNPM**: Gestor de paquetes rápido y eficiente para monorepos.
-- **Biome**: Linter y formateador ultrarrápido.
-- **Turborepo**: Orquestación de tareas y optimización de builds.
+- **Rendimiento optimizado**: Code splitting inteligente, tree-shaking agresivo, chunks separados por biblioteca
+- **Seguridad hardcodeada**: Headers de seguridad, CSP ready, scripts de instalación bloqueados por defecto
+- **Alias automáticos**: Los imports de paquetes internos se generan automáticamente
+- **Tipado de entorno**: Variables de entorno autogeneradas con autocompletado TypeScript
+- **Tailwind CSS v4**: Nuevo motor Oxide escrito en Rust, mucho más rápido
+- **Biome**: Linter y formateador 100x más rápido que ESLint + Prettier
+- **Turborepo**: Caché inteligente para builds incrementales
+- **TypeScript estricto**: Configuración con todas las verificaciones de tipos habilitadas
 
 ---
 
+## Requisitos previos
 
-## Estructura del Proyecto
+- **Node.js** >= 22.0.0 (LTS recomendado)
+- **pnpm** >= 10.0.0
 
-- **apps/webapp/**: Aplicación principal web construida con React y Vite (Si necesitas mas apps sugiero copiar esta carpeta y crear una nueva app y recuerda cambiar los nombres y configuraciones necesarias).
-	- `src/`: Código fuente de la aplicación.
-	- `entorno/`: Archivos de entorno o configuración específica.
-	- `index.html`, `main.tsx`, `App.tsx`, etc.: Archivos principales de la app.
-	- `tailwind.config.js`: Configuración de Tailwind CSS.
-	- `vite.config.ts`: Configuración de Vite.
-	- `tsconfig.json`: Configuración de TypeScript.
+```bash
+# Verificar versiones
+node --version  # v22.x.x
+pnpm --version  # 10.x.x
+```
 
-- **paquetes/**: Paquetes reutilizables y módulos compartidos (Puedes agregar más según tus necesidades).
-	- **api/**: Lógica de acceso a APIs.
-	- **componentes/**: Componentes React reutilizables.
-	- **configuracion-ts/**: Configuraciones base de TypeScript y Vite.
-	- **estados/**: Gestión de estados globales o compartidos.
-	- **hooks/**: Hooks personalizados de React.
-	- **modelos/**: Definiciones de tipos y modelos de datos.
-	- **utiles/**: Funciones utilitarias y helpers.
-
-- **biome.json**: Configuración de Biome para formateo y linting.
-- **turbo.json**: Configuración de Turborepo para orquestar tareas en el monorepo.
-- **package.json**: Dependencias y scripts raíz del monorepo.
-
+---
 
 ## Instalación rápida
 
-1. Instala [PNPM](https://pnpm.io/):
-	```bash
-	npm install -g pnpm
-	```
-2. Clona el repo y entra en la carpeta:
-	```bash
-	git clone https://github.com/Cristiancastt/plantilla-react-monorepo.git
-	cd plantilla-react-monorepo
-	```
-3. Instala dependencias:
-	```bash
-	npx npm-check-updates -u
-	pnpm install
-	```
-4. Inicia la app:
-	```bash
-	pnpm dev
-	```
+```bash
+# 1. Clona el repositorio
+git clone https://github.com/tu-usuario/plantilla-react-monorepo.git
+cd plantilla-react-monorepo
+
+# 2. Instala dependencias
+pnpm install
+
+# 3. Inicia el servidor de desarrollo
+pnpm dev
+```
+
+La app estará en [http://localhost:4200/plantilla/](http://localhost:4200/plantilla/)
 
 ---
 
-## Scripts útiles
+## Scripts disponibles
 
-| Comando         | Descripción                                 |
-|-----------------|---------------------------------------------|
-| pnpm dev        | Inicia la app web en modo desarrollo        |
-
----
-
-
-## Tecnologías principales
-
-| Tecnología    | Uso principal                                 |
-|---------------|-----------------------------------------------|
-| React         | UI y componentes                              |
-| Vite          | Bundler y servidor de desarrollo              |
-| SWC           | Compilador rápido para JS/TS                  |
-| TypeScript    | Tipado estático                               |
-| Tailwind CSS  | Utilidades de estilos                         |
-| Turborepo     | Orquestación de monorepo                      |
-| Biome         | Linter y formateador                          |
-| PNPM          | Gestor de paquetes                            |
-| ky            | Cliente HTTP                                  |
+| Comando | Descripción |
+|---------|-------------|
+| `pnpm dev` | Inicia servidor de desarrollo con HMR |
+| `pnpm build` | Build de producción optimizado |
+| `pnpm build:webapp` | Build solo de la webapp |
+| `pnpm preview` | Previsualiza el build de producción |
+| `pnpm lint` | Verifica código con Biome |
+| `pnpm lint:fix` | Corrige errores automáticamente |
+| `pnpm format` | Formatea todo el código |
+| `pnpm typecheck` | Verifica tipos TypeScript |
+| `pnpm clean` | Limpia carpetas de cache y build |
+| `pnpm clean:all` | Limpieza total + reinstalación |
+| `pnpm audit` | Auditoría de seguridad de dependencias |
+| `pnpm deps:check` | Verifica dependencias desactualizadas |
+| `pnpm deps:update` | Actualiza dependencias a latest |
 
 ---
 
+## Estructura del Proyecto
 
-## ¿Cómo agregar nuevos paquetes?
-
-1. Crea una carpeta dentro de `paquetes/`.
-2. Añade un `package.json` y tu código.
+```
+├── apps/
+│   └── webapp/                 # Aplicación web principal
+│       ├── src/                # Código fuente
+│       ├── entorno/            # Variables de entorno por modo
+│       │   ├── .env.desarrollo
+│       │   ├── .env.produccion
+│       │   └── .env.example
+│       ├── index.html          # HTML con meta tags de seguridad
+│       ├── vite.config.ts      # Configuración de Vite optimizada
+│       └── tailwind.config.js  # Configuración de Tailwind
+│
+├── paquetes/                   # Paquetes compartidos
+│   ├── api/                    # Cliente HTTP y servicios
+│   ├── componentes/            # Componentes React reutilizables
+│   ├── configuracion-ts/       # Configs base de TypeScript
+│   ├── estados/                # Estado global (Zustand)
+│   ├── hooks/                  # Hooks personalizados
+│   ├── modelos/                # Tipos e interfaces TypeScript
+│   └── utiles/                 # Funciones helper
+│
+├── .npmrc                      # Configuración de seguridad de pnpm
+├── .nvmrc                      # Versión de Node.js
+├── biome.json                  # Linter y formatter
+├── turbo.json                  # Configuración de Turborepo
+└── package.json                # Scripts y dependencias raíz
+```
 
 ---
+
+## Variables de entorno
+
+Las variables se definen en `apps/webapp/entorno/.env.{modo}`:
+
+```bash
+# .env.desarrollo - Para desarrollo local
+VITE_API_URL="http://localhost:3000/api"
+VITE_DEBUG="true"
+
+# .env.produccion - Para builds de producción
+VITE_API_URL="https://api.midominio.com"
+VITE_DEBUG="false"
+```
+
+⚠️ **Importante**: Todas las variables deben empezar con `VITE_` para ser expuestas al cliente. Nunca pongas secretos aquí.
+
+---
+
+## Optimizaciones incluidas
+
+### Rendimiento de build
+- **Code splitting**: Vendor chunks separados (react, router, data-fetching, ui, state)
+- **Tree shaking**: Eliminación agresiva de código muerto
+- **Minificación**: esbuild para balance velocidad/tamaño
+- **CSS**: Minificación con esbuild, autoprefixer
+- **Assets**: Hash en nombres para cache busting perfecto
+
+### Rendimiento en runtime
+- **Pre-bundling**: Dependencias más usadas pre-compiladas
+- **React SWC**: Compilador 20x más rápido que Babel
+- **Chunks lazy**: Componentes pesados se cargan bajo demanda
+
+### Seguridad
+- **Scripts bloqueados**: `ignore-scripts=true` en .npmrc
+- **Headers seguros**: X-Content-Type-Options, X-Frame-Options, CSP ready
+- **HTTPS forzado**: Strict-Transport-Security configurado
+- **Dependencias auditadas**: `pnpm audit` en CI
+
+---
+
+## Agregar un nuevo paquete
+
+```bash
+# 1. Crea la carpeta
+mkdir paquetes/mi-paquete
+
+# 2. Crea el package.json
+cat > paquetes/mi-paquete/package.json << EOF
+{
+  "name": "@paquetes/mi-paquete",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts"
+}
+EOF
+
+# 3. Crea el código
+mkdir paquetes/mi-paquete/src
+echo "export const hola = () => 'Hola mundo'" > paquetes/mi-paquete/src/index.ts
+
+# 4. Úsalo en la app
+# import { hola } from '@paquetes/mi-paquete'
+```
+
+El alias se genera automáticamente, no necesitas configurar nada más.
+
+---
+
+## Tecnologías
+
+| Tecnología | Versión | Uso |
+|------------|---------|-----|
+| React | 19.x | UI y componentes |
+| Vite | 7.x | Bundler y dev server |
+| TypeScript | 5.9 | Tipado estático |
+| Tailwind CSS | 4.x | Estilos utility-first |
+| Turborepo | 2.x | Orquestación monorepo |
+| Biome | 2.x | Linting y formatting |
+| pnpm | 10.x | Gestión de paquetes |
+| React Query | 5.x | Data fetching |
+| Zustand | 5.x | Estado global |
+| React Router | 7.x | Routing |
+
+---
+
+## Licencia
+
+MIT
 
 
 ## Contribución

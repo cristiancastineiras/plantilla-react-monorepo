@@ -1,47 +1,94 @@
-# Sistema y metadatos
+# ==============================================================================
+# GITIGNORE - PLANTILLA REACT MONOREPO
+# ==============================================================================
+# Archivos y carpetas que NO deben subirse al repositorio.
+# Organizado por categorías para fácil mantenimiento.
+# ==============================================================================
+
+# === SISTEMA OPERATIVO ===
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
 *.local
+
+# === LOGS ===
 *.log
-
-# Node / PNPM
-node_modules/
-.pnpm-store/
-pnpm-lock.yaml
-
-# TurboRepo
-.turbo/
-
-# Vite
-**/.vite/
-**/.vite-temp/
-
-# Builds
-dist/
-dist-ssr/
-builds/
-builds/*
-
-# Server / producción
-server/dist/
-
-# Public assets generados
-public/dist/
-
-# Cache de herramientas
-.cache/
-.vscode/
-.idea/
-*.swp
-
-# TypeScript / JavaScript
-*.tsbuildinfo
-
-# Entornos / dotenv
-.env
-.env.*.local
-
-# Logs de prueba o depuración
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+lerna-debug.log*
+
+# === NODE / PNPM ===
+node_modules/
+.pnpm-store/
+.npm/
+# NO ignorar pnpm-lock.yaml - es necesario para builds reproducibles
+# pnpm-lock.yaml
+
+# === TURBOREPO ===
+.turbo/
+
+# === VITE ===
+**/.vite/
+**/.vite-temp/
+*.local
+
+# === BUILDS Y OUTPUT ===
+dist/
+dist-ssr/
+build/
+builds/
+out/
+.output/
+.next/
+.nuxt/
+
+# === TYPESCRIPT ===
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# === TESTING ===
+coverage/
+.nyc_output/
+*.lcov
+
+# === CACHÉ ===
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+
+# === VARIABLES DE ENTORNO ===
+# Ignoramos todos los .env excepto los de ejemplo
+.env
+.env.local
+.env.*.local
+# ⚠️  IMPORTANTE: los archivos .env.desarrollo y .env.produccion
+#     están versionados porque NO contienen secretos reales.
+#     En producción real, las variables vienen de CI/CD.
+
+# === IDEs Y EDITORES ===
+.idea/
+*.swp
+*.swo
+*.swn
+.project
+.classpath
+.settings/
+*.sublime-workspace
+*.sublime-project
+# .vscode/ - Comentado porque compartimos settings del equipo
+# Si quieres ignorarlo, descomenta la línea anterior
+
+# === OTROS ===
+*.pem
+*.key
+*.crt
+.vercel
+.netlify
+.serverless/

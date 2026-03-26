@@ -1,15 +1,35 @@
 {
-  "$schema": "https://turborepo.com/schema.json",
+  "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["NODE_ENV", "CI"],
+  "globalDependencies": ["pnpm-lock.yaml", "turbo.json", "biome.json"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**"]
+      "inputs": ["$TURBO_DEFAULT$", ".env*", "entorno/.env*"],
+      "outputs": ["dist/**", ".next/**"],
+      "env": ["VITE_*"]
     },
-    "lint": {},
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "dependsOn": ["^build"]
+    },
+    "preview": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "inputs": ["$TURBO_DEFAULT$", "../../biome.json"],
+      "outputs": []
+    },
+    "typecheck": {
+      "inputs": ["$TURBO_DEFAULT$", "tsconfig.json", "../../paquetes/configuracion-ts/**"],
+      "outputs": []
+    },
+    "clean": {
+      "cache": false,
+      "outputs": []
     }
   }
 }

@@ -4,6 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --mode desarrollo"
+    "dev": "vite --mode desarrollo",
+    "build": "tsc --noEmit && vite build --mode produccion",
+    "build:dev": "vite build --mode desarrollo",
+    "preview": "vite preview --mode produccion",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --write src/",
+    "clean": "rimraf dist .turbo"
   }
 }

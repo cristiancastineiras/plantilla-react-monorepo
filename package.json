@@ -2,13 +2,32 @@
   "private": true,
   "name": "plantilla.monorepo",
   "version": "1.0.0",
+  "description": "Plantilla de monorepo React optimizada para producción con Vite, Turbo y pnpm",
   "packageManager": "pnpm@10.28.2",
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=10.0.0"
+  },
   "workspaces": [
     "apps/*",
     "paquetes/*"
   ],
   "scripts": {
-    "dev": "turbo run dev"
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "build:webapp": "turbo run build --filter=webapp",
+    "preview": "turbo run preview",
+    "lint": "turbo run lint",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "check": "biome check .",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean && rimraf node_modules/.cache",
+    "clean:all": "rimraf **/node_modules **/dist **/.turbo && pnpm install",
+    "prepare": "echo 'Hooks de git listos'",
+    "audit": "pnpm audit --audit-level=moderate",
+    "deps:check": "pnpm outdated --recursive",
+    "deps:update": "pnpm update --recursive --latest"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.18",
@@ -44,5 +63,11 @@
     "typescript": "~5.9.3",
     "vite": "^7.3.1",
     "vite-plugin-static-copy": "^3.2.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "semver@<7.5.2": ">=7.5.2",
+      "postcss@<8.4.31": ">=8.4.31"
+    }
   }
 }

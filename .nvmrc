@@ -1,0 +1,4 @@
+# Versión mínima de Node.js requerida para este proyecto
+# Node 22 LTS incluye mejoras de rendimiento y soporte nativo para TypeScript
+# Usa nvm (Node Version Manager) para cambiar entre versiones fácilmente
+22
