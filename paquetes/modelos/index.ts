@@ -1,4 +1,4 @@
 export type ModeloA = {
-    nombre: string;
-    descripcion: string;
+	nombre: string
+	descripcion: string
 }

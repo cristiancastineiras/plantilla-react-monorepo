@@ -1,9 +1,9 @@
 {
-  "name": "@paquetes/configuracion-ts",
-  "version": "0.0.0",
-  "private": true,
-  "exports": {
-    "./base.json": "./base.json",
-    "./vite.json": "./vite.json"
-  }
+	"name": "@paquetes/configuracion-ts",
+	"version": "0.0.0",
+	"private": true,
+	"exports": {
+		"./base.json": "./base.json",
+		"./vite.json": "./vite.json"
+	}
 }
