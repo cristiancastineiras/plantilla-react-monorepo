@@ -1,5 +1,5 @@
 import { defineConfig, type UserConfig, type ConfigEnv } from 'vite'
-import react from '@vitejs/plugin-react-swc'
+import react from '@vitejs/plugin-react'
 import path from 'node:path'
 import fs from 'node:fs'
 import dotenv from 'dotenv'
@@ -302,7 +302,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     // PLUGINS
     // ========================================================================
     plugins: [
-      // React SWC - más rápido que Babel para compilación
+      // React + Oxc: en Rolldown-Vite (Vite 8) el plugin oficial activa
+      // automáticamente el transformador Oxc para Fast Refresh, JSX/TSX.
       react(),
       
       // Tailwind CSS v4 con soporte nativo de Vite

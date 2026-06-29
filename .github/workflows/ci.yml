@@ -52,8 +52,11 @@ jobs:
       - name: Verificar tipos TypeScript
         run: pnpm typecheck
 
-      - name: Ejecutar linter (Biome)
+      - name: Ejecutar linter (oxlint)
         run: pnpm lint
+
+      - name: Verificar formato (oxfmt)
+        run: pnpm format:check
 
   # ============================================================================
   # BUILD DE PRODUCCIÓN

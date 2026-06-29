@@ -1,0 +1,65 @@
+{
+	"$schema": "./node_modules/oxlint/configuration_schema.json",
+	"categories": {
+		"correctness": "error",
+		"suspicious": "warn",
+		"pedantic": "off",
+		"perf": "warn",
+		"style": "off",
+		"restriction": "off",
+		"nursery": "off"
+	},
+	"plugins": ["react", "react-hooks", "jsx-a11y", "import", "typescript", "unicorn", "vitest"],
+	"rules": {
+		"no-unused-vars": "off",
+		"typescript/no-unused-vars": [
+			"warn",
+			{ "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+		],
+		"no-console": ["warn", { "allow": ["warn", "error", "info"] }],
+		"import/order": [
+			"warn",
+			{
+				"groups": [
+					"builtin",
+					"external",
+					"internal",
+					["parent", "sibling", "index"],
+					"type"
+				],
+				"newlines-between": "always",
+				"alphabetize": { "order": "asc", "caseInsensitive": true }
+			}
+		]
+	},
+	"settings": {
+		"react": {
+			"version": "19.0"
+		},
+		"jsx-a11y": {
+			"components": {
+				"Link": "a",
+				"Button": "button"
+			}
+		}
+	},
+	"env": {
+		"browser": true,
+		"es2024": true,
+		"node": true
+	},
+	"globals": {
+		"import.meta": "readonly"
+	},
+	"ignorePatterns": [
+		"**/node_modules/**",
+		"**/dist/**",
+		"**/.turbo/**",
+		"**/coverage/**",
+		"**/*.min.js",
+		"**/pnpm-lock.yaml",
+		"**/.pnpm-store/**",
+		"**/*.tsbuildinfo",
+		"apps/webapp/src/vite-env.d.ts"
+	]
+}

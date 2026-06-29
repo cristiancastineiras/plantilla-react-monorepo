@@ -1,0 +1,54 @@
+{
+	"$schema": "./node_modules/oxfmt/configuration_schema.json",
+	"useTabs": true,
+	"tabWidth": 2,
+	"printWidth": 100,
+	"endOfLine": "lf",
+	"insertFinalNewline": true,
+	"semi": false,
+	"singleQuote": false,
+	"trailingComma": "all",
+	"arrowParens": "asNeeded",
+	"sortImports": {
+		"groups": [
+			{ "type": "multiline-comment" },
+			{ "type": "side-effect-import" },
+			{ "regex": "^(node:)?[a-z]" },
+			{ "regex": "^@?[a-z]" },
+			{ "regex": "^\\.\\." },
+			{ "regex": "^\\." },
+			{ "type": "type-import" }
+		],
+		"order": "asc",
+		"caseSensitive": false,
+		"newlinesBetween": false
+	},
+	"sortTailwindcss": {
+		"attributes": ["class", "className"],
+		"functions": ["clsx", "cn", "twMerge"]
+	},
+	"ignorePatterns": [
+		"**/node_modules/**",
+		"**/dist/**",
+		"**/.turbo/**",
+		"**/coverage/**",
+		"**/*.min.js",
+		"**/pnpm-lock.yaml",
+		"**/.pnpm-store/**",
+		"**/*.tsbuildinfo"
+	],
+	"overrides": [
+		{
+			"files": ["*.json", "*.jsonc"],
+			"options": {
+				"trailingComma": "none"
+			}
+		},
+		{
+			"files": ["*.md", "*.mdx", "*.html"],
+			"options": {
+				"printWidth": 120
+			}
+		}
+	]
+}

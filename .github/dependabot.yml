@@ -90,6 +90,7 @@ updates:
           - "vite"
           - "@vitejs/*"
           - "vite-*"
+          - "rolldown*"
         update-types:
           - "minor"
           - "patch"
@@ -112,12 +113,11 @@ updates:
           - "minor"
           - "patch"
       
-      # --- Linting y formateo ---
+      # --- Linting y formateo (oxc-project) ---
       linting:
         patterns:
-          - "@biomejs/*"
-          - "biome"
-          - "prettier"
+          - "oxlint"
+          - "oxfmt"
         update-types:
           - "minor"
           - "patch"

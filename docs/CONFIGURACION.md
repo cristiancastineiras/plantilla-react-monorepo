@@ -121,21 +121,25 @@ Solo invalida el cache de la tarea específica.
 
 ---
 
-## Biome (biome.json)
+## Oxc (`.oxlintrc.json` + `.oxfmtrc.json`)
 
-### Por qué Biome en vez de ESLint + Prettier
+### Por qué Oxc en vez de Biome / ESLint + Prettier
 
-- **100x más rápido**: Escrito en Rust, no JavaScript
-- **Un solo archivo**: No necesitas .eslintrc + .prettierrc + .editorconfig
-- **Mismos resultados**: Compatible con la mayoría de reglas de ESLint
+- **Linter (oxlint)**: 50-100x más rápido que ESLint, escrito en Rust, sin tree-shaking de JS
+- **Formatter (oxfmt)**: 30x más rápido que Prettier y 2x más rápido que Biome, Prettier-compatible
+- **Mismas reglas que ESLint**: 838 reglas builtin (incluye React, JSX-a11y, TypeScript, Import, Unicorn, Vitest)
+- **Type-aware linting**: usa el compilador nativo Go de TypeScript (tsgo) para checks que requieren tipos
+- **Configs separadas**: `.oxlintrc.json` para reglas de linting y `.oxfmtrc.json` para formato
 
-### Reglas importantes
+### Reglas importantes configuradas
 
 ```json
-"noUncheckedIndexedAccess": "error"  // Obliga a verificar array[i]
-"useImportType": "error"             // Usa "import type" para types
-"noConsoleLog": "warn"               // console.log = warning
+"no-console": ["warn", { "allow": ["warn", "error", "info"] }]
+"typescript/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]
+"import/order": ["warn", { "groups": [...], "alphabetize": { ... } }]
 ```
+
+Más detalles en [oxc.rs/docs/guide/usage/linter](https://oxc.rs/docs/guide/usage/linter) y [oxc.rs/docs/guide/usage/formatter](https://oxc.rs/docs/guide/usage/formatter).
 
 ---
 
@@ -254,9 +258,9 @@ Controla qué información se envía en el header Referer. Protege URLs internas
 2. **Más seguro**: No permite acceder a dependencias no declaradas
 3. **Menos espacio**: Comparte paquetes entre proyectos
 
-### ¿Por qué SWC y no Babel?
+### ¿Por qué React + Oxc y no Babel/SWC?
 
-SWC está escrito en Rust, es 20x más rápido que Babel para transpilar JSX/TS.
+En Rolldown-Vite (Vite 8), el plugin oficial `@vitejs/plugin-react` activa automáticamente el **transformador Oxc** para Fast Refresh y JSX/TSX. Oxc está escrito en Rust, es 5-10x más rápido que Babel y 2x más rápido que SWC, compartiendo runtime con el propio bundler.
 
 ### ¿Por qué Turborepo?
 

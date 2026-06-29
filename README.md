@@ -1,7 +1,7 @@
 
 # Plantilla React Monorepo
 
-> Monorepo moderno para proyectos React, optimizado para producción con Vite 7, TurboRepo y pnpm workspaces. Incluye configuraciones de seguridad, rendimiento optimizado y mejores prácticas a marzo de 2026.
+> Monorepo moderno para proyectos React, optimizado para producción con Vite 8 (Rolldown + Oxc), TurboRepo y pnpm workspaces. Incluye configuraciones de seguridad, rendimiento optimizado y mejores prácticas a junio de 2026.
 
 ---
 
@@ -12,7 +12,7 @@
 - **Alias automáticos**: Los imports de paquetes internos se generan automáticamente
 - **Tipado de entorno**: Variables de entorno autogeneradas con autocompletado TypeScript
 - **Tailwind CSS v4**: Nuevo motor Oxide escrito en Rust, mucho más rápido
-- **Biome**: Linter y formateador 100x más rápido que ESLint + Prettier
+- **Oxc (oxlint + oxfmt)**: Linter 50-100x más rápido que ESLint y formatter 30x más rápido que Prettier, ambos escritos en Rust
 - **Turborepo**: Caché inteligente para builds incrementales
 - **TypeScript estricto**: Configuración con todas las verificaciones de tipos habilitadas
 
@@ -57,9 +57,10 @@ La app estará en [http://localhost:4200/plantilla/](http://localhost:4200/plant
 | `pnpm build` | Build de producción optimizado |
 | `pnpm build:webapp` | Build solo de la webapp |
 | `pnpm preview` | Previsualiza el build de producción |
-| `pnpm lint` | Verifica código con Biome |
-| `pnpm lint:fix` | Corrige errores automáticamente |
-| `pnpm format` | Formatea todo el código |
+| `pnpm lint` | Verifica código con oxlint |
+| `pnpm lint:fix` | Corrige errores automáticamente con oxlint |
+| `pnpm format` | Formatea todo el código con oxfmt |
+| `pnpm format:check` | Verifica formato sin escribir (para CI) |
 | `pnpm typecheck` | Verifica tipos TypeScript |
 | `pnpm clean` | Limpia carpetas de cache y build |
 | `pnpm clean:all` | Limpieza total + reinstalación |
@@ -94,7 +95,8 @@ La app estará en [http://localhost:4200/plantilla/](http://localhost:4200/plant
 │
 ├── .npmrc                      # Configuración de seguridad de pnpm
 ├── .nvmrc                      # Versión de Node.js
-├── biome.json                  # Linter y formatter
+├── .oxlintrc.json              # Linter (oxlint)
+├── .oxfmtrc.json               # Formatter (oxfmt)
 ├── turbo.json                  # Configuración de Turborepo
 └── package.json                # Scripts y dependencias raíz
 ```
@@ -130,7 +132,7 @@ VITE_DEBUG="false"
 
 ### Rendimiento en runtime
 - **Pre-bundling**: Dependencias más usadas pre-compiladas
-- **React SWC**: Compilador 20x más rápido que Babel
+- **React + Oxc**: `@vitejs/plugin-react` activa automáticamente el transformador Oxc en Rolldown-Vite (Vite 8) para JSX/TSX, 5-10x más rápido que Babel
 - **Chunks lazy**: Componentes pesados se cargan bajo demanda
 
 ### Seguridad
@@ -223,7 +225,7 @@ Settings → Branches → Add rule → main
 | TypeScript | 5.9 | Tipado estático |
 | Tailwind CSS | 4.x | Estilos utility-first |
 | Turborepo | 2.x | Orquestación monorepo |
-| Biome | 2.x | Linting y formatting |
+| Oxc (oxlint + oxfmt) | 1.71 / 0.56 | Linting y formatting |
 | pnpm | 10.x | Gestión de paquetes |
 | React Query | 5.x | Data fetching |
 | Zustand | 5.x | Estado global |

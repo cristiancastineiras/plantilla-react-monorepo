@@ -18,9 +18,10 @@
     "build:webapp": "turbo run build --filter=webapp",
     "preview": "turbo run preview",
     "lint": "turbo run lint",
-    "lint:fix": "biome check --write .",
-    "format": "biome format --write .",
-    "check": "biome check .",
+    "lint:fix": "oxlint --fix .",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "check": "pnpm run lint && pnpm run format:check",
     "typecheck": "turbo run typecheck",
     "clean": "turbo run clean && rimraf node_modules/.cache",
     "clean:all": "rimraf **/node_modules **/dist **/.turbo && pnpm install",
@@ -45,18 +46,18 @@
     "zustand": "^5.0.11"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.13",
     "@tailwindcss/vite": "^4.1.18",
     "@types/dotenv": "^8.2.3",
     "@types/node": "^25.2.0",
     "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react-swc": "^4.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
     "autoprefixer": "^10.4.24",
     "dotenv-cli": "^11.0.0",
     "globals": "^17.3.0",
+    "oxfmt": "^0.56.0",
+    "oxlint": "^1.71.0",
     "postcss": "^8.5.6",
-    "prettier": "^3.8.1",
     "rimraf": "^6.1.2",
     "tailwindcss": "^4.1.18",
     "turbo": "^2.8.1",
@@ -66,7 +67,6 @@
   },
   "pnpm": {
     "overrides": {
-      "semver@<7.5.2": ">=7.5.2",
       "postcss@<8.4.31": ">=8.4.31"
     }
   }
