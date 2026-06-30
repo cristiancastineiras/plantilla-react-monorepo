@@ -2,20 +2,24 @@
 # AUTOMERGE SEGURO PARA DEPENDABOT
 # ==============================================================================
 # Este workflow hace automerge de PRs de Dependabot SOLO si:
-# 1. Es una actualización patch o minor (las major requieren revisión)
-# 2. Todos los checks/tests pasan
-# 3. El PR es realmente de Dependabot (previene spoofing)
+#   1. Es una actualización patch o minor (las major requieren revisión).
+#   2. Todos los checks de CI pasan.
+#   3. El PR es realmente de Dependabot (previene spoofing).
 #
 # Seguridad:
-# - Usa el token limitado de GitHub Actions, no un PAT
-# - Verifica el actor del evento (dependabot[bot])
-# - Solo actúa en PRs, no en otros eventos
+#   - Usa el token limitado de GitHub Actions, no un PAT personal.
+#   - Verifica el actor del evento (dependabot[bot]) antes de actuar.
+#   - Solo se dispara en `pull_request`, NO en `pull_request_target`.
+#     Esto es importante: con `pull_request_target` y checkout del PR head,
+#     un PR malicioso podría ejecutar código con acceso a los secretos del
+#     repo. Con `pull_request` el workflow se ejecuta en el contexto del PR
+#     y los secretos NO se exponen al código del PR.
 # ==============================================================================
 
 name: Dependabot Automerge
 
 on:
-  pull_request_target:
+  pull_request:
     types:
       - opened
       - synchronize
@@ -27,39 +31,32 @@ permissions:
 
 jobs:
   # ============================================================================
-  # JOB 1: VERIFICAR QUE ES DEPENDABOT
+  # JOB 1: VALIDAR EL CÓDIGO DEL PR
   # ============================================================================
-  verify-dependabot:
-    runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
-    outputs:
-      is-dependabot: ${{ steps.check.outputs.is-dependabot }}
-    steps:
-      - name: Verificar que el PR es de Dependabot
-        id: check
-        run: |
-          echo "is-dependabot=true" >> $GITHUB_OUTPUT
-          echo "PR verificado como de Dependabot"
-
-  # ============================================================================
-  # JOB 2: EJECUTAR TESTS Y VALIDACIONES
+  # Ejecuta los mismos pasos que el CI principal sobre el código del PR.
+  # Solo corre si el PR es de Dependabot (filtrado en cada step).
   # ============================================================================
   validate:
-    needs: verify-dependabot
+    name: Validar PR de Dependabot
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.actor == 'dependabot[bot]'
+
     steps:
-      - name: Checkout código
+      - name: Checkout código del PR
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Configurar pnpm
         uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
           cache: "pnpm"
 
       - name: Instalar dependencias
@@ -75,11 +72,16 @@ jobs:
         run: pnpm build
 
   # ============================================================================
-  # JOB 3: AUTOMERGE CONDICIONAL
+  # JOB 2: AUTOMERGE CONDICIONAL
+  # ============================================================================
+  # Habilita automerge SOLO para patch/minor de Dependabot que pasaron CI.
   # ============================================================================
   automerge:
-    needs: [verify-dependabot, validate]
+    name: Automerge
     runs-on: ubuntu-latest
+    needs: validate
+    if: github.actor == 'dependabot[bot]'
+
     steps:
       - name: Obtener metadata de Dependabot
         id: metadata
@@ -88,7 +90,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Habilitar automerge para patch y minor
-        # Solo automerge si es patch o minor, las major requieren revisión humana
         if: >-
           steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
           steps.metadata.outputs.update-type == 'version-update:semver-minor'
@@ -110,8 +111,7 @@ jobs:
           echo ""
           echo "Las actualizaciones major pueden incluir breaking changes."
           echo "Por favor revisa el changelog antes de aprobar."
-          
-          # Añadir comentario al PR
+
           gh pr comment "$PR_URL" --body "## Actualización Major
 
           Esta es una actualización **major** de \`${{ steps.metadata.outputs.dependency-names }}\`.

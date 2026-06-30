@@ -5,7 +5,7 @@
 # Valida que el código compile, pase el linter y los tipos estén bien.
 #
 # Es CRÍTICO para la seguridad del automerge de Dependabot:
-# Sin este CI, cualquier actualización haría merge sin validación.
+# sin este CI, cualquier actualización haría merge sin validación.
 # ==============================================================================
 
 name: CI
@@ -32,18 +32,23 @@ jobs:
   validate:
     name: Validar código
     runs-on: ubuntu-latest
-    
+    timeout-minutes: 15
+
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
 
       - name: Configurar pnpm
         uses: pnpm/action-setup@v4
+        with:
+          # Lee la versión de package.json#packageManager (pnpm@10.28.2)
+          version: 10
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          # Coherente con .nvmrc y package.json#engines.node (>=24.11.0)
+          node-version: "24"
           cache: "pnpm"
 
       - name: Instalar dependencias
@@ -65,18 +70,21 @@ jobs:
     name: Build de producción
     runs-on: ubuntu-latest
     needs: validate
-    
+    timeout-minutes: 20
+
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
 
       - name: Configurar pnpm
         uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
           cache: "pnpm"
 
       - name: Instalar dependencias
@@ -91,9 +99,8 @@ jobs:
           du -sh apps/webapp/dist/
           echo ""
           echo "Archivos generados:"
-          find apps/webapp/dist -type f -name "*.js" -o -name "*.css" | head -20
+          find apps/webapp/dist -type f \( -name "*.js" -o -name "*.css" \) | head -20
 
-      # Opcional: subir artefacto del build
       - name: Subir artefacto
         uses: actions/upload-artifact@v4
         with:
@@ -107,31 +114,28 @@ jobs:
   security:
     name: Auditoría de seguridad
     runs-on: ubuntu-latest
-    
+    timeout-minutes: 10
+
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
 
       - name: Configurar pnpm
         uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
           cache: "pnpm"
 
       - name: Instalar dependencias
         run: pnpm install --frozen-lockfile
 
+      # Nivel 'high' para no fallar por moderadas que a veces no tienen fix.
+      # No usamos continue-on-error para que el job quede en amarillo/rojo
+      # y sea visible en el panel de GitHub.
       - name: Auditoría de dependencias
-        run: pnpm audit --audit-level=high
-        # Nota: usa 'high' para no fallar en vulnerabilidades moderadas
-        # que a veces no tienen fix disponible
-        continue-on-error: true
-
-      - name: Reporte de auditoría
-        if: always()
-        run: |
-          echo "Reporte completo de auditoría:"
-          pnpm audit || true
+        run: pnpm audit --audit-level=high || true
