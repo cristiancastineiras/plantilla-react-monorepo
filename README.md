@@ -56,7 +56,7 @@ pnpm --version  # 10.x.x
 
 ```bash
 # 1. Clona el repositorio
-git clone https://github.com/tu-usuario/plantilla-react-monorepo.git
+git clone https://github.com/cristiancastineiras/plantilla-react-monorepo.git
 cd plantilla-react-monorepo
 
 # 2. Instala dependencias (pnpm.lock se respeta)
@@ -66,7 +66,7 @@ pnpm install
 pnpm dev
 ```
 
-La app estará disponible en [http://localhost:5173](http://localhost:5173) (puerto configurable vía `VITE_PUERTO`).
+La app estará disponible en [http://localhost:4200/plantilla/](http://localhost:4200/plantilla/) (puerto configurable vía `VITE_PUERTO`).
 
 ---
 
