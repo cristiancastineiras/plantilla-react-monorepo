@@ -8,16 +8,16 @@
 	"semi": false,
 	"singleQuote": false,
 	"trailingComma": "all",
-	"arrowParens": "asNeeded",
+	"arrowParens": "always",
 	"sortImports": {
 		"groups": [
-			{ "type": "multiline-comment" },
-			{ "type": "side-effect-import" },
-			{ "regex": "^(node:)?[a-z]" },
-			{ "regex": "^@?[a-z]" },
-			{ "regex": "^\\.\\." },
-			{ "regex": "^\\." },
-			{ "type": "type-import" }
+			{ "type": "multiline-comment", "newlinesBetween": false },
+			{ "type": "side-effect-import", "newlinesBetween": false },
+			{ "regex": "^(node:)?[a-z]", "newlinesBetween": false },
+			{ "regex": "^@?[a-z]", "newlinesBetween": false },
+			{ "regex": "^\\.\\.", "newlinesBetween": false },
+			{ "regex": "^\\.", "newlinesBetween": false },
+			{ "type": "type-import", "newlinesBetween": false }
 		],
 		"order": "asc",
 		"caseSensitive": false,

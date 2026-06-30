@@ -9,7 +9,7 @@
 		"restriction": "off",
 		"nursery": "off"
 	},
-	"plugins": ["react", "react-hooks", "jsx-a11y", "import", "typescript", "unicorn", "vitest"],
+	"plugins": ["react", "jsx-a11y", "import", "typescript", "unicorn", "vitest"],
 	"rules": {
 		"no-unused-vars": "off",
 		"typescript/no-unused-vars": [

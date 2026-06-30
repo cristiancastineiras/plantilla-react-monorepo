@@ -6,10 +6,21 @@ import dotenv from 'dotenv'
 import tailwindcss from '@tailwindcss/vite'
 
 // ============================================================================
-// CONFIGURACIÓN DE VITE - OPTIMIZADA PARA PRODUCCIÓN (Marzo 2026)
+// CONFIGURACIÓN DE VITE 8 - OPTIMIZADA PARA PRODUCCIÓN (Junio 2026)
 // ============================================================================
 // Este archivo está configurado con las mejores prácticas de rendimiento,
 // seguridad y tiempos de compilación para un monorepo React moderno.
+//
+// Vite 8 integra Rolldown + Oxc de forma nativa (sin necesidad de alias):
+//   - Rolldown reemplaza a Rollup como bundler (escrito en Rust)
+//   - Oxc reemplaza a esbuild como transformador y minificador
+//   - Lightning CSS reemplaza a esbuild para CSS minify
+//
+// Migraciones aplicadas desde Vite 7:
+//   - `build.rollupOptions` → `build.rolldownOptions`
+//   - `optimizeDeps.esbuildOptions` → `optimizeDeps.rolldownOptions`
+//   - `manualChunks` (objeto) → `codeSplitting.groups` (Rolldown)
+//   - Drop de console/debugger via `rolldownOptions.output.minify.compress.drop`
 // ============================================================================
 
 /**
@@ -226,9 +237,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     build: {
       outDir: 'dist',
       
-      // Minificación: esbuild es más rápido, terser genera bundles más pequeños
-      // Usamos esbuild para mejor balance velocidad/tamaño en 2026
-      minify: esProduccion ? 'esbuild' : false,
+      // Minificación: Oxc es el minificador nativo de Rolldown-Vite.
+      // Mantenemos 'esbuild' como fallback documentado por si se necesita.
+      minify: esProduccion ? 'oxc' : false,
       
       // Sourcemaps solo en desarrollo o con variable explícita
       sourcemap: esProduccion ? 'hidden' : true,
@@ -239,43 +250,66 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       // Target moderno para navegadores de 2024+
       target: 'esnext',
       
-      // Mejora la compresión de CSS
-      cssMinify: esProduccion ? 'esbuild' : false,
+      // Mejora la compresión de CSS con Lightning CSS (nativo en rolldown-vite)
+      cssMinify: esProduccion ? 'lightningcss' : false,
       
       // Reportar tamaños comprimidos con gzip
       reportCompressedSize: true,
       
-      // Configuración de Rollup para chunks óptimos
-      rollupOptions: {
+      // Configuración de Rolldown (Vite 8 nativo) para chunks óptimos.
+      // `codeSplitting.nativeGroups` reemplaza al deprecado `manualChunks`
+      // y permite agrupar módulos por patrón de ruta con regex.
+      // Se castea a Record<string, unknown> porque los tipos `OutputOptions`
+      // heredados aún no exponen `codeSplitting` ni `minify.compress`.
+      rolldownOptions: {
         output: {
           // Nombres con hash para cache busting efectivo en producción
           entryFileNames: esProduccion ? 'js/[name]-[hash].js' : '[name].js',
           chunkFileNames: esProduccion ? 'js/[name]-[hash].js' : '[name].js',
           assetFileNames: esProduccion  ? 'assets/[name]-[hash].[ext]'  : 'assets/[name].[ext]',
-          
-          // Code splitting inteligente para mejor cacheado
-          manualChunks: esProduccion ? {
-            // Vendor chunks separados para mejor cache de navegador
-            'react-core': ['react', 'react-dom'],
-            'router': ['react-router-dom'],
-            'data-fetching': ['@tanstack/react-query'],
-            'ui-libs': ['lucide-react', 'clsx', 'sonner'],
-            'state': ['zustand']
-          } : undefined
-        },
-        
-        // Opciones de tree-shaking agresivo
+
+          // Drop de console.* / debugger en producción (API nativa Oxc).
+          // Oxc usa booleanos separados en `compress`, no un array.
+          minify: esProduccion
+            ? {
+                compress: {
+                  dropConsole: true,
+                  dropDebugger: true,
+                },
+              }
+            : false,
+        } as Record<string, unknown>,
+
+        // Opciones de tree-shaking agresivo (Rolldown ya hace tree-shaking
+        // eficiente por defecto, así que solo activamos optimizaciones extra).
         treeshake: esProduccion ? {
           moduleSideEffects: false,
-          propertyReadSideEffects: false,
-          tryCatchDeoptimization: false
-        } : false
-      }
+          propertyReadSideEffects: false
+        } : false,
+
+        // Code splitting por regex de rutas (API Rolldown nativa, reemplaza
+        // `manualChunks` deprecado en Vite 8).
+        ...(esProduccion
+          ? {
+              codeSplitting: {
+                nativeGroups: [
+                  { name: 'react-core', test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/ },
+                  { name: 'router', test: /[\\/]node_modules[\\/]react-router-dom[\\/]/ },
+                  { name: 'data-fetching', test: /[\\/]node_modules[\\/]@tanstack[\\/]/ },
+                  { name: 'ui-libs', test: /[\\/]node_modules[\\/](lucide-react|clsx|sonner)[\\/]/ },
+                  { name: 'state', test: /[\\/]node_modules[\\/]zustand[\\/]/ }
+                ]
+              }
+            }
+          : {})
+      } as Record<string, unknown>
     },
 
     // ========================================================================
     // PRE-BUNDLING DE DEPENDENCIAS (OPTIMIZACIÓN DEL COLD START)
     // ========================================================================
+    // En Vite 8 el dependency optimizer usa Rolldown (no esbuild).
+    // `rolldownOptions` reemplaza a `esbuildOptions` con una API equivalente.
     optimizeDeps: {
       // Forzar pre-bundle de estas dependencias para arranque más rápido
       include: [
@@ -288,44 +322,23 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         'lucide-react'
       ],
       // Excluir paquetes locales para que HMR funcione correctamente
-      exclude: ['@paquetes/*'],
-      
-      // Usar esbuild para transformaciones (más rápido que babel)
-      esbuildOptions: {
-        target: 'esnext',
-        // Soportar JSX en archivos .js para librerías legacy
-        loader: { '.js': 'jsx' }
-      }
+      exclude: ['@paquetes/*']
     },
-
-    // ========================================================================
-    // PLUGINS
-    // ========================================================================
-    plugins: [
-      // React + Oxc: en Rolldown-Vite (Vite 8) el plugin oficial activa
-      // automáticamente el transformador Oxc para Fast Refresh, JSX/TSX.
-      react(),
-      
-      // Tailwind CSS v4 con soporte nativo de Vite
-      tailwindcss()
-    ],
 
     // Variables de entorno expuestas
     define: variablesParaVite,
 
     // ========================================================================
-    // CONFIGURACIÓN DE ESBUILD
+    // PLUGINS
     // ========================================================================
-    esbuild: {
-      // Eliminar console.log y debugger en producción
-      drop: esProduccion ? ['console', 'debugger'] : [],
-      
-      // Target moderno para mejor optimización
-      target: 'esnext',
-      
-      // Mejor rendimiento al no verificar legal comments
-      legalComments: 'none'
-    },
+    plugins: [
+      // React + Oxc: en Vite 8 el plugin oficial activa automáticamente el
+      // transformador Oxc para Fast Refresh, JSX/TSX.
+      react(),
+
+      // Tailwind CSS v4 con soporte nativo de Vite
+      tailwindcss(),
+    ],
 
     // ========================================================================
     // CACHÉ Y RENDIMIENTO

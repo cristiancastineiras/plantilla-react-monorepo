@@ -4,6 +4,7 @@
 	"private": true,
 	"exports": {
 		"./base.json": "./base.json",
-		"./vite.json": "./vite.json"
+		"./vite.json": "./vite.json",
+		"./library.json": "./library.json"
 	}
 }

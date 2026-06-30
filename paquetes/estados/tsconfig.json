@@ -1,0 +1,10 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"extends": "../../paquetes/configuracion-ts/library.json",
+	"include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "tsdown.config.ts"],
+	"compilerOptions": {
+		"outDir": "dist",
+		"types": ["node"]
+	},
+	"exclude": ["node_modules", "dist", ".turbo"]
+}

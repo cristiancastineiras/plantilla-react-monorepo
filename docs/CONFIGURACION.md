@@ -196,6 +196,170 @@ Así tienes autocompletado cuando escribes `import.meta.env.`
 
 ---
 
+## Vite 8 + Rolldown nativo
+
+[Vite 8](https://vite.dev/) integra [Rolldown](https://rolldown.rs/) y
+[Oxc](https://oxc.rs/) de forma **nativa**, sin necesidad de alias ni paquetes
+adicionales. Este proyecto usa `vite@^8.1.0`.
+
+### Migración desde Vite 7
+
+| Cambio Vite 7 → Vite 8 | Motivo |
+|---|---|
+| `build.rollupOptions` → `build.rolldownOptions` | Rolldown reemplaza a Rollup |
+| `optimizeDeps.esbuildOptions` → `optimizeDeps.rolldownOptions` | Rolldown ahora hace el pre-bundle |
+| `output.manualChunks` (objeto) **eliminado** | API deprecada de Rollup |
+| `output.advancedChunks.groups` → `codeSplitting.nativeGroups` (top-level) | API nativa de Rolldown |
+| `esbuild.drop: ['console','debugger']` → `rolldownOptions.output.minify.compress: { dropConsole: true, dropDebugger: true }` | API nativa de Oxc (booleanos separados) |
+| `transformWithEsbuild` → `transformWithOxc` | esbuild ahora es peer opcional |
+| `esbuild` global → `oxc` global | Oxc ahora es el transformador por defecto |
+| `commonjsOptions` | ahora es **no-op** (Rolldown maneja CJS directamente) |
+| `resolve.alias[].customResolver` | deprecado → usar plugin custom con `resolveId` |
+
+### Qué cambia al usar Rolldown
+
+| Aspecto | Rollup (Vite clásico) | Rolldown (Vite 8) |
+|---|---|---|
+| Lenguaje del bundler | JavaScript | Rust |
+| Minificador JS por defecto | esbuild | **Oxc** (Rust, más rápido) |
+| Minificador CSS por defecto | esbuild | **Lightning CSS** |
+| Transformador JS | esbuild | **Oxc** |
+| Pre-bundling | esbuild | **Rolldown** |
+| `manualChunks` | objeto o función | **eliminado** → `codeSplitting.nativeGroups` |
+| Hook filter plugins | no | sí (`filter: { id: /regex/ }`) |
+| Tree-shaking | bueno | mejor + optimizaciones extra |
+
+### Code splitting con `codeSplitting.nativeGroups`
+
+```typescript
+build: {
+  rolldownOptions: {
+    codeSplitting: {
+      nativeGroups: [
+        { name: 'react-core', test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/ },
+        { name: 'router', test: /[\\/]node_modules[\\/]react-router-dom[\\/]/ }
+      ]
+    }
+  }
+}
+```
+
+### Minificación con Oxc y drop de console/debugger
+
+```typescript
+build: {
+  rolldownOptions: {
+    output: {
+      minify: {
+        compress: {
+          dropConsole: true,    // elimina console.* en producción
+          dropDebugger: true    // elimina statements debugger
+        }
+      }
+    }
+  }
+}
+```
+
+### Default browser target
+
+Vite 8 actualizó el target por defecto (`build.target: 'baseline-widely-available'`)
+a navegadores de ~2.5 años de antigüedad (Chrome/Edge 111+, Firefox 114+, Safari 16.4+),
+alineado con el estándar [Baseline 2026-01-01](https://web-platform-dx.github.io/web-features/).
+Esto reduce el tamaño del bundle al no necesitar polyfills para navegadores modernos.
+
+---
+
+## tsdown (empaquetador de librerías)
+
+[tsdown](https://tsdown.dev/) es un empaquetador de librerías TypeScript
+construido sobre Rolldown. Cada paquete en `paquetes/*` lo usa para generar
+`dist/` con JS + `.d.ts` + sourcemaps.
+
+### Configuración por paquete
+
+Cada paquete tiene su propio `tsdown.config.ts`:
+
+```typescript
+// paquetes/componentes/tsdown.config.ts
+import { defineConfig } from "tsdown"
+
+export default defineConfig({
+  entry: ["./src/index.ts"],
+  format: ["esm"],
+  platform: "neutral",
+  dts: true,
+  sourcemap: true,
+  clean: true,
+  treeshake: true,
+  external: ["react", "react-dom", "react/jsx-runtime"]
+})
+```
+
+| Opción | Qué hace |
+|---|---|
+| `entry` | Punto(s) de entrada del bundle |
+| `format` | Formato de salida (`esm`, `cjs`, `iife`) |
+| `platform` | `neutral` para librerías (compat universal) |
+| `dts` | Genera y agrupa los `.d.ts` con `rolldown-plugin-dts` |
+| `sourcemap` | Sourcemaps para debugging |
+| `clean` | Limpia `dist/` antes de cada build |
+| `treeshake` | Elimina código muerto |
+| `external` | Dependencias que NO se incluyen en el bundle |
+
+### Scripts disponibles
+
+Cada paquete incluye:
+
+```bash
+pnpm --filter @paquetes/componentes build      # Build producción
+pnpm --filter @paquetes/componentes dev        # Build en watch mode
+pnpm --filter @paquetes/componentes typecheck  # tsc --noEmit
+pnpm --filter @paquetes/componentes lint       # oxlint
+pnpm --filter @paquetes/componentes format     # oxfmt
+pnpm --filter @paquetes/componentes clean      # rimraf dist .turbo
+```
+
+### Preset `library.json`
+
+Todos los paquetes extienden `@paquetes/configuracion-ts/library.json`, un
+preset específico para librerías que sobreescribe `base.json` con:
+
+- `module: ESNext`, `moduleResolution: Bundler`
+- `target: ES2022` (compat universal)
+- `declaration: true` + `declarationMap: true`
+- `jsx: react-jsx` (para paquetes React)
+- `verbatimModuleSyntax: true` (imports/exports de tipo explícitos)
+
+### Convenciones de `package.json`
+
+Cada paquete publica su entry con el estándar moderno:
+
+```json
+{
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "sideEffects": false
+}
+```
+
+### ¿Por qué `external` para React?
+
+Si publicas una librería React, empaquetar `react` dentro del bundle causaría
+duplicación y problemas de hooks. Marcándolo como `external`, el consumidor
+aporta su propia copia de React y el árbol de hooks funciona correctamente.
+
+---
+
 ## Tailwind CSS v4
 
 Tailwind v4 usa un nuevo motor (Oxide) escrito en Rust:

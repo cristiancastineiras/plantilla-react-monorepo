@@ -1,109 +1,180 @@
-
 # Plantilla React Monorepo
 
-> Monorepo moderno para proyectos React, optimizado para producción con Vite 8 (Rolldown + Oxc), TurboRepo y pnpm workspaces. Incluye configuraciones de seguridad, rendimiento optimizado y mejores prácticas a junio de 2026.
+> Monorepo moderno para proyectos React, optimizado para producción con **Vite 8** (Rolldown + Oxc), **TurboRepo** y **pnpm** workspaces. Incluye empaquetado de librerías con **tsdown**, configuraciones de seguridad, rendimiento optimizado y mejores prácticas a junio de 2026.
 
 ---
 
-## Características principales
+## ✨ Características principales
 
-- **Rendimiento optimizado**: Code splitting inteligente, tree-shaking agresivo, chunks separados por biblioteca
-- **Seguridad hardcodeada**: Headers de seguridad, CSP ready, scripts de instalación bloqueados por defecto
-- **Alias automáticos**: Los imports de paquetes internos se generan automáticamente
-- **Tipado de entorno**: Variables de entorno autogeneradas con autocompletado TypeScript
-- **Tailwind CSS v4**: Nuevo motor Oxide escrito en Rust, mucho más rápido
-- **Oxc (oxlint + oxfmt)**: Linter 50-100x más rápido que ESLint y formatter 30x más rápido que Prettier, ambos escritos en Rust
+### 🚀 Rendimiento extremo
+- **Vite 8 + Rolldown**: Bundler en Rust (drop-in de Rollup) para builds hasta 10x más rápidos
+- **Oxc**: Transformador y minificador en Rust (reemplaza a esbuild, 2x más rápido)
+- **Lightning CSS**: Minificador CSS en Rust (reemplaza a esbuild para CSS)
+- **Code splitting nativo**: `codeSplitting.nativeGroups` agrupa vendor chunks por regex
+- **Tree-shaking agresivo**: `moduleSideEffects: false`, `propertyReadSideEffects: false`
+- **Drop automático**: `console.*` y `debugger` eliminados en producción via Oxc
+
+### 🔒 Seguridad por defecto
+- **Headers de seguridad**: X-Content-Type-Options, X-Frame-Options, CSP ready
+- **Scripts bloqueados**: `ignore-scripts=true` en `.npmrc` (anti supply-chain attacks)
+- **Variables de entorno tipadas**: Autogeneradas con autocompletado TypeScript
+- **HTTPS forzado**: Strict-Transport-Security configurado
+- **Auditoría de dependencias**: `pnpm audit` integrado en CI
+
+### 🛠️ Developer Experience
+- **Alias automáticos**: Los imports de paquetes internos se generan desde `paquetes/`
+- **tsdown**: Empaquetador de librerías TS powered by Rolldown (más rápido que tsup)
+- **Oxc (oxlint + oxfmt)**: Linter 50-100x más rápido que ESLint, formatter 30x más rápido que Prettier
 - **Turborepo**: Caché inteligente para builds incrementales
-- **TypeScript estricto**: Configuración con todas las verificaciones de tipos habilitadas
+- **TypeScript estricto**: Todas las verificaciones de tipos habilitadas
+
+### 🎨 UI Moderna
+- **React 19**: Última versión con Actions, Server Components y Compiler ready
+- **Tailwind CSS v4**: Nuevo motor Oxide escrito en Rust
+- **React Query 5**: Data fetching con caché automático
+- **Zustand 5**: Estado global minimalista
+- **React Router 7**: Routing con loaders y data API
 
 ---
 
-## Requisitos previos
+## 📋 Requisitos previos
 
-- **Node.js** >= 22.0.0 (LTS recomendado)
+- **Node.js** >= 24.11.0 (Vite 8 y tsdown requieren Node 22.18+, Rolldown recomienda 24+)
 - **pnpm** >= 10.0.0
 
 ```bash
 # Verificar versiones
-node --version  # v22.x.x
+node --version  # v24.x.x
 pnpm --version  # 10.x.x
 ```
 
+> 💡 Usa `nvm use` si tienes `.nvmrc` configurado en tu proyecto.
+
 ---
 
-## Instalación rápida
+## 🚀 Instalación rápida
 
 ```bash
 # 1. Clona el repositorio
 git clone https://github.com/tu-usuario/plantilla-react-monorepo.git
 cd plantilla-react-monorepo
 
-# 2. Instala dependencias
+# 2. Instala dependencias (pnpm.lock se respeta)
 pnpm install
 
 # 3. Inicia el servidor de desarrollo
 pnpm dev
 ```
 
-La app estará en [http://localhost:4200/plantilla/](http://localhost:4200/plantilla/)
+La app estará disponible en [http://localhost:5173](http://localhost:5173) (puerto configurable vía `VITE_PUERTO`).
 
 ---
 
-## Scripts disponibles
+## 📜 Scripts disponibles
+
+### Raíz (orquestados con Turbo)
 
 | Comando | Descripción |
 |---------|-------------|
-| `pnpm dev` | Inicia servidor de desarrollo con HMR |
-| `pnpm build` | Build de producción optimizado |
+| `pnpm dev` | Inicia servidor de desarrollo con HMR (todas las apps) |
+| `pnpm build` | Build de producción optimizado de todo el monorepo |
 | `pnpm build:webapp` | Build solo de la webapp |
 | `pnpm preview` | Previsualiza el build de producción |
-| `pnpm lint` | Verifica código con oxlint |
-| `pnpm lint:fix` | Corrige errores automáticamente con oxlint |
+| `pnpm lint` | Verifica código con oxlint (todos los paquetes) |
+| `pnpm lint:fix` | Corrige errores automáticamente |
 | `pnpm format` | Formatea todo el código con oxfmt |
 | `pnpm format:check` | Verifica formato sin escribir (para CI) |
-| `pnpm typecheck` | Verifica tipos TypeScript |
+| `pnpm typecheck` | Verifica tipos TypeScript en todo el monorepo |
+| `pnpm check` | Ejecuta `lint` + `format:check` |
 | `pnpm clean` | Limpia carpetas de cache y build |
-| `pnpm clean:all` | Limpieza total + reinstalación |
+| `pnpm clean:all` | Limpieza total + reinstalación de dependencias |
 | `pnpm audit` | Auditoría de seguridad de dependencias |
 | `pnpm deps:check` | Verifica dependencias desactualizadas |
 | `pnpm deps:update` | Actualiza dependencias a latest |
 
+### Por paquete (con `pnpm --filter`)
+
+Cada paquete en `paquetes/*` expone:
+
+```bash
+pnpm --filter @paquetes/componentes build      # Build producción
+pnpm --filter @paquetes/componentes dev        # Build en watch mode
+pnpm --filter @paquetes/componentes typecheck  # tsc --noEmit
+pnpm --filter @paquetes/componentes lint       # oxlint
+pnpm --filter @paquetes/componentes format     # oxfmt
+pnpm --filter @paquetes/componentes clean      # rimraf dist .turbo
+```
+
 ---
 
-## Estructura del Proyecto
+## 📁 Estructura del Proyecto
 
 ```
+plantilla-react-monorepo/
 ├── apps/
-│   └── webapp/                 # Aplicación web principal
-│       ├── src/                # Código fuente
-│       ├── entorno/            # Variables de entorno por modo
+│   └── webapp/                          # Aplicación web principal (Vite 8)
+│       ├── src/                         # Código fuente React 19
+│       ├── entorno/                     # Variables de entorno por modo
 │       │   ├── .env.desarrollo
 │       │   ├── .env.produccion
 │       │   └── .env.example
-│       ├── index.html          # HTML con meta tags de seguridad
-│       ├── vite.config.ts      # Configuración de Vite optimizada
-│       └── tailwind.config.js  # Configuración de Tailwind
+│       ├── index.html                   # HTML con meta tags de seguridad
+│       ├── vite.config.ts               # Config Vite 8 + Rolldown + Oxc
+│       ├── tailwind.config.js
+│       └── tsconfig.json                # Extiende @paquetes/configuracion-ts/vite.json
 │
-├── paquetes/                   # Paquetes compartidos
-│   ├── api/                    # Cliente HTTP y servicios
-│   ├── componentes/            # Componentes React reutilizables
-│   ├── configuracion-ts/       # Configs base de TypeScript
-│   ├── estados/                # Estado global (Zustand)
-│   ├── hooks/                  # Hooks personalizados
-│   ├── modelos/                # Tipos e interfaces TypeScript
-│   └── utiles/                 # Funciones helper
+├── paquetes/                            # Paquetes compartidos (tsdown)
+│   ├── api/                             # Cliente HTTP (Ky)
+│   ├── componentes/                     # Componentes React reutilizables
+│   ├── configuracion-ts/                # Presets TypeScript
+│   │   ├── base.json                    # Base para todo el monorepo
+│   │   ├── vite.json                    # Para apps (Vite/React)
+│   │   └── library.json                 # Para librerías (tsdown)
+│   ├── estados/                         # Estado global (Zustand)
+│   ├── hooks/                           # Hooks personalizados
+│   ├── modelos/                         # Tipos e interfaces TypeScript
+│   └── utiles/                          # Funciones helper
 │
-├── .npmrc                      # Configuración de seguridad de pnpm
-├── .nvmrc                      # Versión de Node.js
-├── .oxlintrc.json              # Linter (oxlint)
-├── .oxfmtrc.json               # Formatter (oxfmt)
-├── turbo.json                  # Configuración de Turborepo
-└── package.json                # Scripts y dependencias raíz
+├── docs/
+│   └── CONFIGURACION.md                 # Guía detallada de configuración
+│
+├── .github/
+│   ├── dependabot.yml                   # Actualización automática de dependencias
+│   └── workflows/                       # CI/CD
+│
+├── .npmrc                               # ignore-scripts=true (seguridad)
+├── .oxlintrc.json                       # Linter (Rust, 100x más rápido)
+├── .oxfmtrc.json                        # Formatter (Rust, 30x más rápido)
+├── turbo.json                           # Orquestación del monorepo
+└── package.json                         # Dependencias y scripts raíz
 ```
 
 ---
 
-## Variables de entorno
+## 🔧 Stack tecnológico
+
+| Tecnología | Versión | Rol |
+|------------|---------|-----|
+| **React** | 19.x | UI y componentes |
+| **Vite** | 8.x | Bundler + dev server (Rolldown + Oxc nativos) |
+| **TypeScript** | 5.9 | Tipado estático estricto |
+| **Rolldown** | 1.1.x | Bundler Rust (integrado en Vite 8) |
+| **tsdown** | 0.22.x | Empaquetador de librerías (powered by Rolldown) |
+| **Tailwind CSS** | 4.x | Estilos utility-first (motor Oxide) |
+| **Turborepo** | 2.x | Orquestación y caché de monorepo |
+| **Oxc** | 1.71 / 0.56 | Linter (oxlint) + formatter (oxfmt) |
+| **pnpm** | 10.x | Gestión de paquetes con workspaces |
+| **TanStack Query** | 5.x | Data fetching con caché |
+| **TanStack Table** | 8.x | Tablas headless |
+| **Zustand** | 5.x | Estado global minimalista |
+| **React Router** | 7.x | Routing con loaders |
+| **Ky** | 1.x | Cliente HTTP moderno |
+| **Sonner** | 2.x | Notificaciones toast |
+| **Lucide** | 0.563 | Iconos SVG |
+
+---
+
+## 🌐 Variables de entorno
 
 Las variables se definen en `apps/webapp/entorno/.env.{modo}`:
 
@@ -111,67 +182,210 @@ Las variables se definen en `apps/webapp/entorno/.env.{modo}`:
 # .env.desarrollo - Para desarrollo local
 VITE_API_URL="http://localhost:3000/api"
 VITE_DEBUG="true"
+VITE_PUERTO="5173"
 
 # .env.produccion - Para builds de producción
 VITE_API_URL="https://api.midominio.com"
 VITE_DEBUG="false"
+VITE_BASE_PATH="/"
 ```
 
-⚠️ **Importante**: Todas las variables deben empezar con `VITE_` para ser expuestas al cliente. Nunca pongas secretos aquí.
+> ⚠️ **Importante**: Todas las variables deben empezar con `VITE_` para ser expuestas al cliente. Nunca pongas secretos aquí.
+
+### Referencias entre variables
+
+Puedes usar `${VAR}` para referenciar otras variables. El sistema resuelve
+referencias automáticamente hasta 10 niveles de profundidad:
+
+```bash
+VITE_PROTOCOL="https"
+VITE_HOST="api.midominio.com"
+VITE_FULL_URL="${VITE_PROTOCOL}://${VITE_HOST}"  # → "https://api.midominio.com"
+```
+
+El archivo `src/vite-env.d.ts` se regenera automáticamente con tipos para
+autocompletado en el IDE.
 
 ---
 
-## Optimizaciones incluidas
+## ⚡ Optimizaciones incluidas
 
-### Rendimiento de build
-- **Code splitting**: Vendor chunks separados (react, router, data-fetching, ui, state)
-- **Tree shaking**: Eliminación agresiva de código muerto
-- **Minificación**: esbuild para balance velocidad/tamaño
-- **CSS**: Minificación con esbuild, autoprefixer
-- **Assets**: Hash en nombres para cache busting perfecto
+### Build (Vite 8 + Rolldown)
 
-### Rendimiento en runtime
-- **Pre-bundling**: Dependencias más usadas pre-compiladas
-- **React + Oxc**: `@vitejs/plugin-react` activa automáticamente el transformador Oxc en Rolldown-Vite (Vite 8) para JSX/TSX, 5-10x más rápido que Babel
+```typescript
+{
+  build: {
+    rolldownOptions: {
+      output: {
+        minify: { compress: { dropConsole: true, dropDebugger: true } },
+      },
+      treeshake: { moduleSideEffects: false, propertyReadSideEffects: false },
+      codeSplitting: {
+        nativeGroups: [
+          { name: 'react-core', test: /node_modules\/(react|react-dom)\// },
+          { name: 'router', test: /node_modules\/react-router-dom\// },
+          // ...
+        ]
+      }
+    }
+  }
+}
+```
+
+| Optimización | Beneficio |
+|---|---|
+| **Code splitting por regex** | Chunks vendor separados → mejor caché del navegador |
+| **Tree-shaking agresivo** | Eliminación de código muerto más efectiva |
+| **Minificación con Oxc** | 2x más rápido que esbuild, mismo tamaño de bundle |
+| **CSS con Lightning CSS** | Minificación más rápida + syntax lowering moderno |
+| **Assets con hash** | Cache busting perfecto en producción |
+| **Drop console/debugger** | Bundle de producción sin código de debug |
+
+### Runtime
+
+- **Pre-bundling con Rolldown**: Cold start hasta 10x más rápido que esbuild
+- **HMR instantáneo**: Rolldown procesa cambios en ms
 - **Chunks lazy**: Componentes pesados se cargan bajo demanda
 
 ### Seguridad
-- **Scripts bloqueados**: `ignore-scripts=true` en .npmrc
-- **Headers seguros**: X-Content-Type-Options, X-Frame-Options, CSP ready
-- **HTTPS forzado**: Strict-Transport-Security configurado
-- **Dependencias auditadas**: `pnpm audit` en CI
+
+- **`ignore-scripts=true`**: Ningún paquete puede ejecutar código al instalar
+- **Headers HTTP**: X-Content-Type-Options, X-Frame-Options, Referrer-Policy
+- **HTTPS forzado**: HSTS configurado en producción
+- **FS restrictivo**: Vite bloquea acceso a `.env*`, `*.pem`, `*.key`
 
 ---
 
-## Agregar un nuevo paquete
+## 📦 Empaquetar librerías con tsdown
+
+Cada paquete en `paquetes/*` se compila con [tsdown](https://tsdown.dev/)
+(powered by Rolldown). Ejemplo: `paquetes/componentes/tsdown.config.ts`:
+
+```typescript
+import { defineConfig } from "tsdown"
+
+export default defineConfig({
+  entry: ["./src/index.ts"],
+  format: ["esm"],
+  platform: "neutral",
+  dts: true,                    // Genera y agrupa .d.ts
+  sourcemap: true,
+  clean: true,
+  treeshake: true,
+  external: ["react", "react-dom", "react/jsx-runtime"],
+})
+```
+
+### Convenciones de `package.json` para librerías
+
+```json
+{
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "sideEffects": false,
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}
+```
+
+> 🔑 **¿Por qué `external` para React?** Si empaquetas React dentro de la
+> librería, causa duplicación y rompe los hooks. Marcándolo como external,
+> el consumidor aporta su propia copia.
+
+---
+
+## ➕ Agregar un nuevo paquete
+
+### Librería TypeScript pura (sin React)
 
 ```bash
-# 1. Crea la carpeta
-mkdir paquetes/mi-paquete
+# 1. Crea la estructura
+mkdir paquetes/mi-paquete/src
 
-# 2. Crea el package.json
-cat > paquetes/mi-paquete/package.json << EOF
+# 2. Crea el tsdown.config.ts
+```
+
+```typescript
+// paquetes/mi-paquete/tsdown.config.ts
+import { defineConfig } from "tsdown"
+
+export default defineConfig({
+  entry: ["./src/index.ts"],
+  format: ["esm"],
+  platform: "neutral",
+  dts: true,
+})
+```
+
+```bash
+# 3. Crea el tsconfig.json
+```
+
+```json
+// paquetes/mi-paquete/tsconfig.json
+{
+  "extends": "../../paquetes/configuracion-ts/library.json",
+  "include": ["src/**/*.ts", "tsdown.config.ts"]
+}
+```
+
+```bash
+# 4. Crea el package.json
+```
+
+```json
+// paquetes/mi-paquete/package.json
 {
   "name": "@paquetes/mi-paquete",
   "version": "0.0.0",
   "private": true,
-  "main": "./src/index.ts"
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src/",
+    "format": "oxfmt src/",
+    "clean": "rimraf dist .turbo"
+  }
 }
-EOF
+```
 
-# 3. Crea el código
-mkdir paquetes/mi-paquete/src
+```bash
+# 5. Crea el código fuente
 echo "export const hola = () => 'Hola mundo'" > paquetes/mi-paquete/src/index.ts
 
-# 4. Úsalo en la app
+# 6. Úsalo en la app
 # import { hola } from '@paquetes/mi-paquete'
 ```
 
-El alias se genera automáticamente, no necesitas configurar nada más.
+El alias se genera **automáticamente** desde el nombre en `package.json` —
+no necesitas configurar nada más.
 
 ---
 
-## CI/CD y Dependabot
+## 🔄 CI/CD y Dependabot
 
 ### Actualización automática de dependencias
 
@@ -198,12 +412,12 @@ Para máxima seguridad, configura estas reglas en GitHub:
 ```
 Settings → Branches → Add rule → main
 
-☑️ Require a pull request before merging
-☑️ Require status checks to pass before merging
+☑ Require a pull request before merging
+☑ Require status checks to pass before merging
    - validate
    - build
-☑️ Require branches to be up to date before merging
-☑️ Do not allow bypassing the above settings
+☑ Require branches to be up to date before merging
+☑ Do not allow bypassing the above settings
 ```
 
 ### Archivos de CI/CD
@@ -216,32 +430,24 @@ Settings → Branches → Add rule → main
 
 ---
 
-## Tecnologías
+## 📚 Documentación adicional
 
-| Tecnología | Versión | Uso |
-|------------|---------|-----|
-| React | 19.x | UI y componentes |
-| Vite | 7.x | Bundler y dev server |
-| TypeScript | 5.9 | Tipado estático |
-| Tailwind CSS | 4.x | Estilos utility-first |
-| Turborepo | 2.x | Orquestación monorepo |
-| Oxc (oxlint + oxfmt) | 1.71 / 0.56 | Linting y formatting |
-| pnpm | 10.x | Gestión de paquetes |
-| React Query | 5.x | Data fetching |
-| Zustand | 5.x | Estado global |
-| React Router | 7.x | Routing |
+- 📖 **[docs/CONFIGURACION.md](docs/CONFIGURACION.md)**: Guía detallada de cada
+  configuración (TypeScript, Vite, Rolldown, tsdown, Turbo, Oxc)
+- 🌐 [Vite 8 docs](https://vite.dev/guide/migration)
+- 🦀 [Rolldown](https://rolldown.rs/)
+- 📦 [tsdown](https://tsdown.dev/)
+- ⚡ [Oxc](https://oxc.rs/)
 
 ---
 
-## Licencia
+## 📄 Licencia
 
 MIT
 
+---
 
-## Contribución
+## 🤝 Contribución
 
-¡Las contribuciones son bienvenidas! Abre un issue o pull request para sugerencias o mejoras.
-
-## Licencia
-
-MIT
+¡Las contribuciones son bienvenidas! Abre un issue o pull request para
+sugerencias o mejoras.
